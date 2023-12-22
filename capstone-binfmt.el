@@ -29,9 +29,9 @@
 
 (defmacro* capstone-with-sections ((sections file fmt) &body body)
   `(progn
-     (assert (file-exists-p file))
-     (assert (symbolp sections))
-     (assert (symbolp fmt))
+     (assert (file-exists-p ,file))
+     (assert (symbolp ,sections))
+     (assert (symbolp ,fmt))
      (let* ((,sections (ecase ,fmt
                          (:raw (capstone-pull-sections-raw ,file))
                          )))

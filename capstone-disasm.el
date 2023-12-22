@@ -37,18 +37,19 @@
 
   ;; use uninterned local symbols so we don't collide with anything used in BODY scope obarray
   (let ((handle (gensym "handle"))
-        (disas (gensym "disas")))
+        (disas (gensym "disas"))
+	(disas-sym))
 
     `(progn
        ;; 11:15, restate my assumptions
-       (assert (symbolp disas-sym))
-       (assert (vectorp code))
-       (assert (integerp start))
-       (assert (integerp count))
-       (assert (symbolp arch))
-       (assert (integerp mode))
+       (assert (symbolp ,disas-sym))
+       (assert (vectorp ,code))
+       (assert (integerp ,start))
+       (assert (integerp ,count))
+       (assert (symbolp ,arch))
+       (assert (integerp ,mode))
        (when keep-handle
-         (assert (integerp keep-handle)))
+         (assert (integerp ,keep-handle)))
 
        (let* ((,handle (or ,keep-handle (capstone-open-arch ,arch ,mode)))
               (,disas (if ,handle
@@ -74,13 +75,13 @@
 
 (defun capstone-disasm-buffer (input-buffer arch mode start &optional output-buffer)
   "disasm buffer INPUT-BUFFER as ARCH in MODE instructions at START address, optionally output results OUTPUT-BUFFER"
-  (assert (bufferp input-buffer))
-  (assert (symbolp arch))
+  (assert (bufferp ,input-buffer))
+  (assert (symbolp ,arch))
   (when mode
-    (assert (integerp mode)))
-  (assert (integerp start))
+    (assert (integerp ,mode)))
+  (assert (integerp ,start))
   (when output-buffer
-    (assert (bufferp output-buffer)))
+    (assert (bufferp ,output-buffer)))
 
   (with-current-buffer input-buffer
     ;; XXX: fill this out for all archs
@@ -138,14 +139,15 @@
 
 (defun capstone-disasm-file (file fmt arch &optional start mode toggle-hexl)
   "Disassemble a binary opcode FILE of ARCH at START address in MODE (optional: default little endian)"
-  (assert (and (stringp file) (file-exists-p file)))
-  (assert (symbolp arch))
-  (assert (symbolp fmt))
+  (assert (and (stringp ,file) (file-exists-p ,file)))
+  (assert (symbolp ,arch))
+  (assert (symbolp ,fmt))
   (when start
-    (assert (integerp start)))
+    (assert (integerp ,start)))
   (when mode
-    (assert (integerp mode)))
-  (let* ((start (or start 0))
+    (assert (integerp ,mode)))
+  (let* ((sections)
+	 (start (or start 0))
          (processed-sections
           (capstone-with-sections
            (sections file fmt)
